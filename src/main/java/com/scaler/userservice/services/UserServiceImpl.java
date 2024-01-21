@@ -1,5 +1,6 @@
 package com.scaler.userservice.services;
 
+import com.scaler.userservice.dtos.UserDto;
 import com.scaler.userservice.exceptions.UserNotExistException;
 import com.scaler.userservice.models.User;
 import com.scaler.userservice.repositories.UserRepository;
@@ -13,10 +14,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
+    private UserDto userDto;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository){
+    public UserServiceImpl(UserRepository userRepository, UserDto userDto){
         this.userRepository = userRepository;
+        this.userDto = userDto;
     }
     @Override
     public User getSingleUser(Long id) throws UserNotExistException {
@@ -44,6 +47,8 @@ public class UserServiceImpl implements UserService{
         user.setDeleted(false);
         return userRepository.save(user);
     }
+
+
 
     @Override
     public User deleteUser(Long id) throws UserNotExistException {
