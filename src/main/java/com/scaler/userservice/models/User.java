@@ -1,6 +1,7 @@
 package com.scaler.userservice.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ public class User extends BaseModel{
     private String username;
     private String password;
     private String name;
+    @OneToOne
     private Address address;
     private String phone;
 
