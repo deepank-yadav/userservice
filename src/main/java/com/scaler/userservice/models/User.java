@@ -1,5 +1,6 @@
 package com.scaler.userservice.models;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToOne;
@@ -8,14 +9,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@MappedSuperclass
+@Entity
 public class User extends BaseModel{
 
     private String email;
     private String username;
     private String password;
-    private String name;
-    @OneToOne
+    @Embedded
+    private Name name;
+    @Embedded
     private Address address;
     private String phone;
 

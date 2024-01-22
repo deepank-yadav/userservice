@@ -1,12 +1,12 @@
 package com.scaler.userservice.services;
 
-import com.scaler.userservice.models.UserDto;
 import com.scaler.userservice.exceptions.UserNotExistException;
 import com.scaler.userservice.models.User;
 import com.scaler.userservice.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,12 +14,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
-    private UserDto userDto;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserDto userDto){
+    public UserServiceImpl(UserRepository userRepository){
         this.userRepository = userRepository;
-        this.userDto = userDto;
     }
     @Override
     public User getSingleUser(Long id) throws UserNotExistException {
@@ -45,6 +43,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public User addUser(User user) {
         user.setDeleted(false);
+        user.setCreatedAt(new Date());
+        user.setLastUpdated(new Date());
         return userRepository.save(user);
     }
 

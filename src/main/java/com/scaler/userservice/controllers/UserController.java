@@ -19,8 +19,8 @@ public class UserController {
         this.userService = userService;
     }
     @GetMapping("/{id}")
-    public User getSingleUser(@PathVariable("id") Long id){
-        return null;
+    public User getSingleUser(@PathVariable("id") Long id) throws UserNotExistException {
+        return userService.getSingleUser(id);
     }
 
     @GetMapping
