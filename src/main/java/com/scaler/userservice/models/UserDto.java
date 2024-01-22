@@ -1,7 +1,8 @@
-package com.scaler.userservice.dtos;
+package com.scaler.userservice.models;
 
 import com.scaler.userservice.models.BaseModel;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,8 @@ public class UserDto extends BaseModel {
     private String username;
     private String password;
     private String name;
-    private String address;
+    @OneToOne
+    private Address address;
     private String phone;
 
 }

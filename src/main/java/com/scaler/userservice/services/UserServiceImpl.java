@@ -1,6 +1,6 @@
 package com.scaler.userservice.services;
 
-import com.scaler.userservice.dtos.UserDto;
+import com.scaler.userservice.models.UserDto;
 import com.scaler.userservice.exceptions.UserNotExistException;
 import com.scaler.userservice.models.User;
 import com.scaler.userservice.repositories.UserRepository;
