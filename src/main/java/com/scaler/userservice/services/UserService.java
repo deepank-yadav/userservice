@@ -17,6 +17,10 @@ public interface UserService {
 
     User updateUser(Long id, User user) throws UserNotExistException;
 
+    public User signUp(String fullName,
+                       String email,
+                       String password);
+
 
 
 }

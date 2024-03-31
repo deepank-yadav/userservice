@@ -18,7 +18,7 @@ public class BaseModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @JsonIgnore
-    private boolean isDeleted;
+    private boolean deleted;
     private Date createdAt;
     private Date lastUpdated;
 

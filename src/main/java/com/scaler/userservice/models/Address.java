@@ -11,6 +11,6 @@ public class Address{
     private String street;
     private String city;
     private String zipcode;
-    @Embedded
-    private Geolocation geolocation;
+//    @Embedded
+//    private Geolocation geolocation;
 }

@@ -4,6 +4,7 @@ import com.scaler.userservice.exceptions.UserNotExistException;
 import com.scaler.userservice.models.User;
 import com.scaler.userservice.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,9 +16,13 @@ public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
 
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository){
+    public UserServiceImpl(UserRepository userRepository,
+                           BCryptPasswordEncoder bCryptPasswordEncoder){
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
     @Override
     public User getSingleUser(Long id) throws UserNotExistException {
@@ -70,5 +75,17 @@ public class UserServiceImpl implements UserService{
         }
         User user = userOptional.get();
         return userRepository.save(user);
+    }
+
+    @Override
+    public User signUp(String fullName, String email, String password) {
+
+        User u = new User();
+
+        u.setName(fullName);
+        u.setEmail(email);
+        u.setHashPassword(bCryptPasswordEncoder.encode(password));
+        User user = userRepository.save(u);
+        return user;
     }
 }
