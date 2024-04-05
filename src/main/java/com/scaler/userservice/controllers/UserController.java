@@ -1,11 +1,18 @@
 package com.scaler.userservice.controllers;
 
+import com.scaler.userservice.dtos.LoginRequestDto;
+import com.scaler.userservice.dtos.LogoutRequestDto;
 import com.scaler.userservice.dtos.SignUpRequestDto;
+import com.scaler.userservice.dtos.UserDto;
 import com.scaler.userservice.exceptions.UserNotExistException;
 import com.scaler.userservice.models.Token;
 import com.scaler.userservice.models.User;
+import com.scaler.userservice.repositories.TokenRepository;
 import com.scaler.userservice.services.UserService;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,24 +22,21 @@ import java.util.List;
 public class UserController {
 
     private UserService userService;
+    private final TokenRepository tokenRepository;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService,
+                          TokenRepository tokenRepository){
         this.userService = userService;
+        this.tokenRepository = tokenRepository;
     }
 
-//    @GetMapping
-//    public Token login(){
-//        return null;
-//    }
-//
-//    public User signup(){
-//        return null;
-//    }
-//
-//    public User logout(){
-//        return null;
-//    }
+    @PostMapping("/login")
+    public Token login(@RequestBody LoginRequestDto requestDto){
+        return userService.login(requestDto.getEmail(), requestDto.getPassword());
+    }
+
+
     @GetMapping("/{id}")
     public User getSingleUser(@PathVariable("id") Long id) throws UserNotExistException {
         return userService.getSingleUser(id);
@@ -57,13 +61,28 @@ public class UserController {
     public User deleteUser(@PathVariable("id") Long id) throws UserNotExistException {
         return userService.deleteUser(id);
     }
-    @PostMapping("/")
+    @PostMapping("/signup")
 
-    public User signUp(@RequestBody SignUpRequestDto request){
+    public UserDto signUp(@RequestBody SignUpRequestDto request){
         String email =  request.getEmail();
         String password = request.getPassword();
         String name = request.getName();
 
-        return userService.signUp(name,email,password);
+        return UserDto.from(userService.signUp(name,email,password));
     }
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody LogoutRequestDto request){
+        userService.logout(request.getToken());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/validate/{token}")
+    public UserDto validateToken(@PathVariable("token") @NotNull String token){
+        return UserDto.from(userService.validateToken(token));
+    }
+
+//    @PostMapping("/validate/{token}")
+//    public User validateToken(@PathVariable("token") @NotNull String token){
+//        return userService.validateToken(token);
+//    }
 }

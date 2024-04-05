@@ -1,28 +1,37 @@
 package com.scaler.userservice.services;
 
 import com.scaler.userservice.exceptions.UserNotExistException;
+import com.scaler.userservice.models.Token;
 import com.scaler.userservice.models.User;
+import com.scaler.userservice.repositories.TokenRepository;
 import com.scaler.userservice.repositories.UserRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
 
+    private TokenRepository tokenRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
-                           BCryptPasswordEncoder bCryptPasswordEncoder){
+                           BCryptPasswordEncoder bCryptPasswordEncoder, TokenRepository tokenRepository){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.tokenRepository = tokenRepository;
     }
     @Override
     public User getSingleUser(Long id) throws UserNotExistException {
@@ -87,5 +96,55 @@ public class UserServiceImpl implements UserService{
         u.setHashPassword(bCryptPasswordEncoder.encode(password));
         User user = userRepository.save(u);
         return user;
+    }
+
+    @Override
+    public Token login(String email, String password) {
+        Optional<User> userOptional = userRepository.findAllByEmail(email);
+        if(userOptional.isEmpty()){
+            //throw password not matched exception
+            return null;
+        }
+        User user = userOptional.get();
+        if(!bCryptPasswordEncoder.matches(password, user.getHashPassword())){
+            //throw password not matched exception
+            return null;
+        }
+        Token token = new Token();
+        LocalDate currentDate = LocalDate.now();
+        LocalDate dateAfter30Days = currentDate.plusDays(30);
+
+        Date expiryDate = Date.from(dateAfter30Days.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        token.setUser(user);
+        token.setExpiryAt(expiryDate);
+
+        token.setValue(RandomStringUtils.randomAlphabetic(128));
+
+
+        return tokenRepository.save(token);
+    }
+    @Override
+    public void logout( String token){
+
+        Optional<Token> token1 = tokenRepository.findByValueAndDeleted(token,false);
+
+
+        if(token1.isEmpty()){
+            //throw TokenNotExistOrAlreadyExpiredException
+            return;
+        }
+        Token token2 = token1.get();
+        token2.setDeleted(true);
+        tokenRepository.save(token2);
+    }
+
+    @Override
+    public User validateToken(String token){
+        Optional<Token> token1= tokenRepository.findByValueAndDeletedEqualsAndExpiryAtGreaterThan(token,false, new Date());
+        if(token1.isEmpty()){
+            //throw TokenNotExistOrAlreadyExpiredException
+            return null;
+        }
+        return token1.get().getUser();
     }
 }

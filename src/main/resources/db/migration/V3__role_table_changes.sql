@@ -1,8 +1,10 @@
 ALTER TABLE `role`
-    DROP COLUMN `role`;
+DROP
+COLUMN `role`;
 
 ALTER TABLE user
-    DROP COLUMN username;
+DROP
+COLUMN username;
 
 ALTER TABLE authorization
     MODIFY access_token_metadata LONGTEXT;

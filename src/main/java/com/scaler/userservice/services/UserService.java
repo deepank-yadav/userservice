@@ -1,6 +1,7 @@
 package com.scaler.userservice.services;
 
 import com.scaler.userservice.exceptions.UserNotExistException;
+import com.scaler.userservice.models.Token;
 import com.scaler.userservice.models.User;
 
 import java.util.List;
@@ -17,10 +18,13 @@ public interface UserService {
 
     User updateUser(Long id, User user) throws UserNotExistException;
 
-    public User signUp(String fullName,
+    User signUp(String fullName,
                        String email,
                        String password);
 
+    Token login(String email, String password);
+    void logout(String token);
 
+    User validateToken(String token);
 
 }

@@ -13,10 +13,9 @@ import java.util.List;
 public class User extends BaseModel{
 
     private String email;
-    private String username;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> role;
-    @JsonIgnore
+   // @JsonIgnore
     private String hashPassword;
     //@Embedded
     private String name;

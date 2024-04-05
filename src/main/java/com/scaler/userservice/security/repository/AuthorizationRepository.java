@@ -1,4 +1,4 @@
-package com.scaler.userservice.security;
+package com.scaler.userservice.security.repository;
 
 import java.util.Optional;
 
