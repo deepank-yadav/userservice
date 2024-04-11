@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService{
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.tokenRepository = tokenRepository;
         this.objectMapper =  objectMapper;
+        this.kafkaTemplate = kafkaTemplate;
     }
     @Override
     public User getSingleUser(Long id) throws UserNotExistException {
@@ -110,7 +111,7 @@ public class UserServiceImpl implements UserService{
 
         SendEmailEventDto sendEmailEventDto = new SendEmailEventDto();
         sendEmailEventDto.setTo(email);
-        sendEmailEventDto.setFrom("info@test.com");
+        sendEmailEventDto.setFrom("deepankyadavv@gmail.com");
         sendEmailEventDto.setSubject("Welcome to our platform");
         sendEmailEventDto.setBody("Welcome to our platform. You have successfully signed up with email: "+email);
         try {

@@ -19,9 +19,9 @@ public class User extends BaseModel{
     private String hashPassword;
     //@Embedded
     private String name;
-    @Embedded
-    private Address address;
-    private String phone;
+//    @Embedded
+//    private Address address;
+//    private String phone;
 
 
 }
